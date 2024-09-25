@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import PropTypes from 'prop-types';
 import NewsItem from "./NewsItem";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -13,27 +13,26 @@ function News(props) {
     const [totalResults, setTotalResults] = useState(0);
     const [page, setPage] = useState(1);
 
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         const url = `https://newsapi.org/v2/top-headlines?country=us&category=${category}&page=${page}&apiKey=${apiKey}`;
-        setPage(prevPage => prevPage + 1); // Update page number safely
         try {
-            let response = await fetch(url);
-            let parsedData = await response.json();
+            const response = await fetch(url);
+            const parsedData = await response.json();
             setArticles(prevArticles => [...prevArticles, ...parsedData.articles]); // Update articles state
             setTotalResults(parsedData.totalResults);
         } catch (error) {
             console.error("Error fetching data:", error);
         }
-    };
+    }, [category, page]); // Make sure to include `category` and `page` as dependencies
 
     useEffect(() => {
         fetchData();
-    }, []); // Add dependencies
+    }, [fetchData]); // Add fetchData as a dependency
 
     return (
         <InfiniteScroll
             dataLength={articles.length}
-            next={fetchData}
+            next={() => setPage(prevPage => prevPage + 1)} // Increase page to load more data
             hasMore={articles.length < totalResults}
             loader={<h4 className="text-center">Loading...</h4>}
             endMessage={
