@@ -1,12 +1,14 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  build: {
-    rollupOptions: {
-      external: ['bootstrap'], // Exclude 'bootstrap' from the bundle
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `@import 'bootstrap/dist/css/bootstrap.min.css';`,
+      },
     },
   },
 });
