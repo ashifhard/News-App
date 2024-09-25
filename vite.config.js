@@ -4,11 +4,13 @@ import react from '@vitejs/plugin-react';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  css: {
-    preprocessorOptions: {
-      scss: {
-        additionalData: `@import 'bootstrap/dist/css/bootstrap.min.css';`,
-      },
+  build: {
+    rollupOptions: {
+      external: [
+        'bootstrap', 
+        'bootstrap/dist/css/bootstrap.min.css', 
+        'bootstrap/dist/js/bootstrap.bundle.min' // Add Bootstrap JS bundle here
+      ],
     },
   },
 });
